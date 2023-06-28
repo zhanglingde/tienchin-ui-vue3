@@ -17,7 +17,7 @@ export function getChannel(channelId) {
     })
 }
 
-// 新增角色
+// 新增渠道
 export function addChannel(data) {
     return request({
         url: '/tienchin/channel',
@@ -26,7 +26,7 @@ export function addChannel(data) {
     })
 }
 
-// 修改角色
+// 修改渠道
 export function updateChannel(data) {
     return request({
         url: '/tienchin/channel',
