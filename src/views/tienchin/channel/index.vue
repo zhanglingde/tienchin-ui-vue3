@@ -57,7 +57,8 @@
                     icon="Plus"
                     @click="handleAdd"
                     v-hasPermi="['system:role:add']"
-                >新增</el-button>
+                >新增
+                </el-button>
             </el-col>
             <el-col :span="1.5">
                 <el-button
@@ -67,7 +68,8 @@
                     :disabled="single"
                     @click="handleUpdate"
                     v-hasPermi="['system:role:edit']"
-                >修改</el-button>
+                >修改
+                </el-button>
             </el-col>
             <el-col :span="1.5">
                 <el-button
@@ -77,7 +79,8 @@
                     :disabled="multiple"
                     @click="handleDelete"
                     v-hasPermi="['system:role:remove']"
-                >删除</el-button>
+                >删除
+                </el-button>
             </el-col>
             <el-col :span="1.5">
                 <el-button
@@ -86,17 +89,18 @@
                     icon="Download"
                     @click="handleExport"
                     v-hasPermi="['system:role:export']"
-                >导出</el-button>
+                >导出
+                </el-button>
             </el-col>
             <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
         </el-row>
 
         <!-- 表格数据 -->
         <el-table v-loading="loading" :data="channelList" @selection-change="handleSelectionChange">
-            <el-table-column type="selection" width="55" align="center" />
-            <el-table-column label="渠道名称" prop="channelName" width="120" />
-            <el-table-column label="状态" prop="status" :show-overflow-tooltip="true" width="150" />
-            <el-table-column label="类型" prop="type" :show-overflow-tooltip="true" width="150" />
+            <el-table-column type="selection" width="55" align="center"/>
+            <el-table-column label="渠道名称" prop="channelName" width="120"/>
+            <el-table-column label="状态" prop="status" :show-overflow-tooltip="true" width="150"/>
+            <el-table-column label="类型" prop="type" :show-overflow-tooltip="true" width="150"/>
             <el-table-column label="创建时间" align="center" prop="createTime">
                 <template #default="scope">
                     <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -148,17 +152,17 @@
             @pagination="getList"
         />
 
-        <!-- 添加或修改角色配置对话框 -->
+        <!-- 添加或修改渠道对话框 -->
         <el-dialog :title="title" v-model="open" width="500px" append-to-body>
-            <el-form ref="roleRef" :model="form" :rules="rules" label-width="100px">
+            <el-form ref="channelRef" :model="form" :rules="rules" label-width="100px">
                 <el-form-item label="渠道名称" prop="channelName">
-                    <el-input v-model="form.channelName" placeholder="请输入渠道名称" />
+                    <el-input v-model="form.channelName" placeholder="请输入渠道名称"/>
                 </el-form-item>
                 <el-form-item label="状态" prop="status">
-                    <el-input v-model="form.status" placeholder="请输入渠道状态" />
+                    <el-input v-model="form.status" placeholder="请输入渠道状态"/>
                 </el-form-item>
-                <el-form-item label="类型" prop="roleName">
-                    <el-input v-model="form.roleName" placeholder="请输入渠道类型" />
+                <el-form-item label="类型" prop="type">
+                    <el-input v-model="form.type" placeholder="请输入渠道类型"/>
                 </el-form-item>
 
                 <el-form-item label="备注">
@@ -177,10 +181,10 @@
         <el-dialog :title="title" v-model="openDataScope" width="500px" append-to-body>
             <el-form :model="form" label-width="80px">
                 <el-form-item label="角色名称">
-                    <el-input v-model="form.roleName" :disabled="true" />
+                    <el-input v-model="form.roleName" :disabled="true"/>
                 </el-form-item>
                 <el-form-item label="权限字符">
-                    <el-input v-model="form.roleKey" :disabled="true" />
+                    <el-input v-model="form.roleKey" :disabled="true"/>
                 </el-form-item>
                 <el-form-item label="权限范围">
                     <el-select v-model="form.dataScope" @change="dataScopeSelectChange">
@@ -193,9 +197,13 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="数据权限" v-show="form.dataScope == 2">
-                    <el-checkbox v-model="deptExpand" @change="handleCheckedTreeExpand($event, 'dept')">展开/折叠</el-checkbox>
-                    <el-checkbox v-model="deptNodeAll" @change="handleCheckedTreeNodeAll($event, 'dept')">全选/全不选</el-checkbox>
-                    <el-checkbox v-model="form.deptCheckStrictly" @change="handleCheckedTreeConnect($event, 'dept')">父子联动</el-checkbox>
+                    <el-checkbox v-model="deptExpand" @change="handleCheckedTreeExpand($event, 'dept')">展开/折叠
+                    </el-checkbox>
+                    <el-checkbox v-model="deptNodeAll" @change="handleCheckedTreeNodeAll($event, 'dept')">全选/全不选
+                    </el-checkbox>
+                    <el-checkbox v-model="form.deptCheckStrictly" @change="handleCheckedTreeConnect($event, 'dept')">
+                        父子联动
+                    </el-checkbox>
                     <el-tree
                         class="tree-border"
                         :data="deptOptions"
@@ -221,14 +229,14 @@
 
 
 <script setup name="Channel">
-import { addRole, changeRoleStatus, dataScope, delRole, getRole, listRole, updateRole } from "@/api/system/role";
-import { roleMenuTreeselect, treeselect as menuTreeselect } from "@/api/system/menu";
-import { treeselect as deptTreeselect, roleDeptTreeselect } from "@/api/system/dept";
-import {listChannel} from "@/api/tienchin/channel";
+import {addRole, changeRoleStatus, dataScope, delRole, getRole, listRole, updateRole} from "@/api/system/role";
+import {roleMenuTreeselect, treeselect as menuTreeselect} from "@/api/system/menu";
+import {treeselect as deptTreeselect, roleDeptTreeselect} from "@/api/system/dept";
+import {listChannel,addChannel} from "@/api/tienchin/channel";
 
 const router = useRouter();
-const { proxy } = getCurrentInstance();
-const { sys_normal_disable } = proxy.useDict("sys_normal_disable");
+const {proxy} = getCurrentInstance();
+const {sys_normal_disable} = proxy.useDict("sys_normal_disable");
 
 const channelList = ref([]);
 const open = ref(false);
@@ -252,11 +260,11 @@ const deptRef = ref(null);
 
 /** 数据范围选项*/
 const dataScopeOptions = ref([
-    { value: "1", label: "全部数据权限" },
-    { value: "2", label: "自定数据权限" },
-    { value: "3", label: "本部门数据权限" },
-    { value: "4", label: "本部门及以下数据权限" },
-    { value: "5", label: "仅本人数据权限" }
+    {value: "1", label: "全部数据权限"},
+    {value: "2", label: "自定数据权限"},
+    {value: "3", label: "本部门数据权限"},
+    {value: "4", label: "本部门及以下数据权限"},
+    {value: "5", label: "仅本人数据权限"}
 ]);
 
 const data = reactive({
@@ -269,13 +277,13 @@ const data = reactive({
         status: undefined
     },
     rules: {
-        roleName: [{ required: true, message: "角色名称不能为空", trigger: "blur" }],
-        roleKey: [{ required: true, message: "权限字符不能为空", trigger: "blur" }],
-        roleSort: [{ required: true, message: "角色顺序不能为空", trigger: "blur" }]
+        channelName: [{required: true, message: "渠道名称不能为空", trigger: "blur"}],
+        status: [{required: true, message: "渠道状态不能为空", trigger: "blur"}],
+        type: [{required: true, message: "渠道类型不能为空", trigger: "blur"}]
     },
 });
 
-const { queryParams, form, rules } = toRefs(data);
+const {queryParams, form, rules} = toRefs(data);
 
 /** 查询角色列表 */
 function getList() {
@@ -286,17 +294,20 @@ function getList() {
         loading.value = false;
     });
 }
+
 /** 搜索按钮操作 */
 function handleQuery() {
     queryParams.value.pageNum = 1;
     getList();
 }
+
 /** 重置按钮操作 */
 function resetQuery() {
     dateRange.value = [];
     proxy.resetForm("queryRef");
     handleQuery();
 }
+
 /** 删除按钮操作 */
 function handleDelete(row) {
     const roleIds = row.roleId || ids.value;
@@ -305,20 +316,24 @@ function handleDelete(row) {
     }).then(() => {
         getList();
         proxy.$modal.msgSuccess("删除成功");
-    }).catch(() => {});
+    }).catch(() => {
+    });
 }
+
 /** 导出按钮操作 */
 function handleExport() {
     proxy.download("system/role/export", {
         ...queryParams.value,
     }, `role_${new Date().getTime()}.xlsx`);
 }
+
 /** 多选框选中数据 */
 function handleSelectionChange(selection) {
     ids.value = selection.map(item => item.roleId);
     single.value = selection.length != 1;
     multiple.value = !selection.length;
 }
+
 /** 角色状态修改 */
 function handleStatusChange(row) {
     let text = row.status === "0" ? "启用" : "停用";
@@ -330,6 +345,7 @@ function handleStatusChange(row) {
         row.status = row.status === "0" ? "1" : "0";
     });
 }
+
 /** 更多操作 */
 function handleCommand(command, row) {
     switch (command) {
@@ -343,16 +359,19 @@ function handleCommand(command, row) {
             break;
     }
 }
+
 /** 分配用户 */
 function handleAuthUser(row) {
     router.push("/system/role-auth/user/" + row.roleId);
 }
+
 /** 查询菜单树结构 */
 function getMenuTreeselect() {
     menuTreeselect().then(response => {
         menuOptions.value = response.data;
     });
 }
+
 /** 所有部门节点数据 */
 function getDeptAllCheckedKeys() {
     // 目前被选中的部门节点
@@ -362,25 +381,20 @@ function getDeptAllCheckedKeys() {
     checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
     return checkedKeys;
 }
+
 /** 重置新增的表单以及其他数据  */
 function reset() {
-    if (menuRef.value != undefined) {
-        menuRef.value.setCheckedKeys([]);
-    }
-    menuExpand.value = false;
-    menuNodeAll.value = false;
-    deptExpand.value = true;
-    deptNodeAll.value = false;
     form.value = {
-        channelId: undefined,
+        channelId:undefined,
         channelName: undefined,
-        statue: undefined,
-        type: 0,
-        status: "0",
+        type: undefined,
+        status: undefined,
         remark: undefined
     };
-    proxy.resetForm("roleRef");
+    // 校验
+    proxy.resetForm("channelRef");
 }
+
 /** 添加角色 */
 function handleAdd() {
     reset();
@@ -388,6 +402,7 @@ function handleAdd() {
     open.value = true;
     title.value = "添加角色";
 }
+
 /** 修改角色 */
 function handleUpdate(row) {
     reset();
@@ -410,6 +425,7 @@ function handleUpdate(row) {
         title.value = "修改角色";
     });
 }
+
 /** 根据角色ID查询菜单树结构 */
 function getRoleMenuTreeselect(roleId) {
     return roleMenuTreeselect(roleId).then(response => {
@@ -417,6 +433,7 @@ function getRoleMenuTreeselect(roleId) {
         return response;
     });
 }
+
 /** 根据角色ID查询部门树结构 */
 function getRoleDeptTreeselect(roleId) {
     return roleDeptTreeselect(roleId).then(response => {
@@ -424,6 +441,7 @@ function getRoleDeptTreeselect(roleId) {
         return response;
     });
 }
+
 /** 树权限（展开/折叠）*/
 function handleCheckedTreeExpand(value, type) {
     if (type == "menu") {
@@ -438,6 +456,7 @@ function handleCheckedTreeExpand(value, type) {
         }
     }
 }
+
 /** 树权限（全选/全不选） */
 function handleCheckedTreeNodeAll(value, type) {
     if (type == "menu") {
@@ -446,6 +465,7 @@ function handleCheckedTreeNodeAll(value, type) {
         deptRef.value.setCheckedNodes(value ? deptOptions.value : []);
     }
 }
+
 /** 树权限（父子联动） */
 // function handleCheckedTreeConnect(value, type) {
 //     if (type == "menu") {
@@ -465,7 +485,7 @@ function handleCheckedTreeNodeAll(value, type) {
 // }
 /** 提交按钮 */
 function submitForm() {
-    proxy.$refs["roleRef"].validate(valid => {
+    proxy.$refs["channelRef"].validate(valid => {
         if (valid) {
             if (form.value.channelId != undefined) {
                 // form.value.menuIds = getMenuAllCheckedKeys();
@@ -485,17 +505,20 @@ function submitForm() {
         }
     });
 }
+
 /** 取消按钮 */
 function cancel() {
     open.value = false;
     reset();
 }
+
 /** 选择角色权限范围触发 */
 function dataScopeSelectChange(value) {
     if (value !== "2") {
         deptRef.value.setCheckedKeys([]);
     }
 }
+
 /** 分配数据权限操作 */
 function handleDataScope(row) {
     reset();
@@ -515,6 +538,7 @@ function handleDataScope(row) {
         title.value = "分配数据权限";
     });
 }
+
 /** 提交按钮（数据权限） */
 function submitDataScope() {
     if (form.value.roleId != undefined) {
@@ -526,6 +550,7 @@ function submitDataScope() {
         });
     }
 }
+
 /** 取消按钮（数据权限）*/
 function cancelDataScope() {
     openDataScope.value = false;
