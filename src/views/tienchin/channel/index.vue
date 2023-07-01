@@ -1,19 +1,10 @@
 <template>
     <div class="app-container">
         <el-form :model="queryParams" ref="queryRef" v-show="showSearch" :inline="true">
-            <el-form-item label="角色名称" prop="roleName">
+            <el-form-item label="渠道名称" prop="channelName">
                 <el-input
-                    v-model="queryParams.roleName"
-                    placeholder="请输入角色名称"
-                    clearable
-                    style="width: 240px"
-                    @keyup.enter="handleQuery"
-                />
-            </el-form-item>
-            <el-form-item label="权限字符" prop="roleKey">
-                <el-input
-                    v-model="queryParams.roleKey"
-                    placeholder="请输入权限字符"
+                    v-model="queryParams.searchValue"
+                    placeholder="请输入渠道名称"
                     clearable
                     style="width: 240px"
                     @keyup.enter="handleQuery"
@@ -22,12 +13,27 @@
             <el-form-item label="状态" prop="status">
                 <el-select
                     v-model="queryParams.status"
-                    placeholder="角色状态"
+                    placeholder="渠道状态"
                     clearable
                     style="width: 240px"
                 >
                     <el-option
-                        v-for="dict in sys_normal_disable"
+                        v-for="dict in channel_status"
+                        :key="dict.value"
+                        :label="dict.label"
+                        :value="dict.value"
+                    />
+                </el-select>
+            </el-form-item>
+            <el-form-item label="类型" prop="status">
+                <el-select
+                    v-model="queryParams.type"
+                    placeholder="渠道类型"
+                    clearable
+                    style="width: 240px"
+                >
+                    <el-option
+                        v-for="dict in channel_type"
                         :key="dict.value"
                         :label="dict.label"
                         :value="dict.value"
@@ -98,9 +104,19 @@
         <!-- 表格数据 -->
         <el-table v-loading="loading" :data="channelList" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55" align="center"/>
+            <el-table-column label="渠道Id" prop="channelId" width="120"/>
             <el-table-column label="渠道名称" prop="channelName" width="120"/>
-            <el-table-column label="状态" prop="status" :show-overflow-tooltip="true" width="150"/>
-            <el-table-column label="类型" prop="type" :show-overflow-tooltip="true" width="150"/>
+            <el-table-column label="状态" prop="status" :show-overflow-tooltip="true" width="150">
+                <template #default="scope">
+                    <dict-tag :options="channel_status" :value="scope.row.status" />
+                </template>
+            </el-table-column>
+            <el-table-column label="类型" prop="type" :show-overflow-tooltip="true" width="150">
+                <template #default="scope">
+                    <dict-tag :options="channel_type" :value="scope.row.type" />
+                </template>
+            </el-table-column>
+            <el-table-column label="备注" prop="remark" :show-overflow-tooltip="true" width="150"/>
             <el-table-column label="创建时间" align="center" prop="createTime">
                 <template #default="scope">
                     <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -108,7 +124,7 @@
             </el-table-column>
             <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
                 <template #default="scope">
-                    <el-tooltip content="修改" placement="top" v-if="scope.row.roleId !== 1">
+                    <el-tooltip content="修改" placement="top" v-if="scope.row.channelId !== 0">
                         <el-button
                             type="text"
                             icon="Edit"
@@ -116,7 +132,7 @@
                             v-hasPermi="['system:role:edit']"
                         ></el-button>
                     </el-tooltip>
-                    <el-tooltip content="删除" placement="top" v-if="scope.row.roleId !== 1">
+                    <el-tooltip content="删除" placement="top" v-if="scope.row.channelId !== 0">
                         <el-button
                             type="text"
                             icon="Delete"
@@ -124,7 +140,7 @@
                             v-hasPermi="['system:role:remove']"
                         ></el-button>
                     </el-tooltip>
-                    <el-tooltip content="数据权限" placement="top" v-if="scope.row.roleId !== 1">
+                    <el-tooltip content="数据权限" placement="top" v-if="scope.row.channelId !== 0">
                         <el-button
                             type="text"
                             icon="CircleCheck"
@@ -132,7 +148,7 @@
                             v-hasPermi="['system:role:edit']"
                         ></el-button>
                     </el-tooltip>
-                    <el-tooltip content="分配用户" placement="top" v-if="scope.row.roleId !== 1">
+                    <el-tooltip content="分配用户" placement="top" v-if="scope.row.roleId !== 0">
                         <el-button
                             type="text"
                             icon="User"
@@ -158,13 +174,24 @@
                 <el-form-item label="渠道名称" prop="channelName">
                     <el-input v-model="form.channelName" placeholder="请输入渠道名称"/>
                 </el-form-item>
-                <el-form-item label="状态" prop="status">
-                    <el-input v-model="form.status" placeholder="请输入渠道状态"/>
+                <el-form-item label="状态">
+                    <el-radio-group v-model="form.status">
+                        <el-radio
+                            v-for="dict in channel_status"
+                            :key="dict.value"
+                            :label="dict.value"
+                        >{{ dict.label }}</el-radio>
+                    </el-radio-group>
                 </el-form-item>
-                <el-form-item label="类型" prop="type">
-                    <el-input v-model="form.type" placeholder="请输入渠道类型"/>
+                <el-form-item label="类型">
+                    <el-radio-group v-model="form.type">
+                        <el-radio
+                            v-for="dict in channel_type"
+                            :key="dict.value"
+                            :label="dict.value"
+                        >{{ dict.label }}</el-radio>
+                    </el-radio-group>
                 </el-form-item>
-
                 <el-form-item label="备注">
                     <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
                 </el-form-item>
@@ -232,11 +259,11 @@
 import {addRole, changeRoleStatus, dataScope, delRole, getRole, listRole, updateRole} from "@/api/system/role";
 import {roleMenuTreeselect, treeselect as menuTreeselect} from "@/api/system/menu";
 import {treeselect as deptTreeselect, roleDeptTreeselect} from "@/api/system/dept";
-import {listChannel,addChannel} from "@/api/tienchin/channel";
+import {listChannel,addChannel,getChannel,updateChannel,delChannel} from "@/api/tienchin/channel";
 
 const router = useRouter();
 const {proxy} = getCurrentInstance();
-const {sys_normal_disable} = proxy.useDict("sys_normal_disable");
+const {sys_normal_disable,channel_type,channel_status} = proxy.useDict("sys_normal_disable","channel_type","channel_status");
 
 const channelList = ref([]);
 const open = ref(false);
@@ -274,6 +301,7 @@ const data = reactive({
         pageSize: 10,
         searchValue: undefined,
         roleKey: undefined,
+        type: undefined,
         status: undefined
     },
     rules: {
@@ -310,9 +338,9 @@ function resetQuery() {
 
 /** 删除按钮操作 */
 function handleDelete(row) {
-    const roleIds = row.roleId || ids.value;
-    proxy.$modal.confirm('是否确认删除角色编号为"' + roleIds + '"的数据项?').then(function () {
-        return delRole(roleIds);
+    const channelIds = row.channelId || ids.value;
+    proxy.$modal.confirm('是否确认删除渠道编号为"' + channelIds + '"的数据项?').then(function () {
+        return delChannel(channelIds);
     }).then(() => {
         getList();
         proxy.$modal.msgSuccess("删除成功");
@@ -329,7 +357,7 @@ function handleExport() {
 
 /** 多选框选中数据 */
 function handleSelectionChange(selection) {
-    ids.value = selection.map(item => item.roleId);
+    ids.value = selection.map(item => item.channelId);
     single.value = selection.length != 1;
     multiple.value = !selection.length;
 }
@@ -406,23 +434,22 @@ function handleAdd() {
 /** 修改角色 */
 function handleUpdate(row) {
     reset();
-    const roleId = row.roleId || ids.value;
-    const roleMenu = getRoleMenuTreeselect(roleId);
-    getRole(roleId).then(response => {
+    const channelId = row.channelId || ids.value;
+    getChannel(channelId).then(response => {
         form.value = response.data;
         // form.value.roleSort = Number(form.value.roleSort);
         open.value = true;
-        nextTick(() => {
-            roleMenu.then((res) => {
-                let checkedKeys = res.checkedKeys;
-                checkedKeys.forEach((v) => {
-                    nextTick(() => {
-                        menuRef.value.setChecked(v, true, false);
-                    });
-                });
-            });
-        });
-        title.value = "修改角色";
+        // nextTick(() => {
+        //     roleMenu.then((res) => {
+        //         let checkedKeys = res.checkedKeys;
+        //         checkedKeys.forEach((v) => {
+        //             nextTick(() => {
+        //                 menuRef.value.setChecked(v, true, false);
+        //             });
+        //         });
+        //     });
+        // });
+        title.value = "修改渠道";
     });
 }
 
@@ -489,7 +516,7 @@ function submitForm() {
         if (valid) {
             if (form.value.channelId != undefined) {
                 // form.value.menuIds = getMenuAllCheckedKeys();
-                updateRole(form.value).then(response => {
+                updateChannel(form.value).then(response => {
                     proxy.$modal.msgSuccess("修改成功");
                     open.value = false;
                     getList();

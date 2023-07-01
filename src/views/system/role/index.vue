@@ -115,6 +115,7 @@
          </el-table-column>
          <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template #default="scope">
+                <!--  roleId = 1 为系统管理员              -->
               <el-tooltip content="修改" placement="top" v-if="scope.row.roleId !== 1">
                 <el-button
                   type="text"
